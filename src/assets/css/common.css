@@ -1,0 +1,14 @@
+:root {
+  --primary-color: #ff9854;
+
+}
+
+body {
+  font-size: 14px;
+}
+
+.no-wrap {
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
+}
