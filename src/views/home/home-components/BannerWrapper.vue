@@ -43,49 +43,48 @@ setInterval(() => {
 
 <style scoped lang="less">
 .wrapper {
-  margin: 1rem auto;
-  border-radius: 1rem;
-  width: 95%;
-  position: relative;
+  width: 343px;
+  height: 160px;
+  background: #666666;
+  margin: 0 auto;
   display: flex;
   flex-wrap: nowrap;
   overflow: hidden;
+  position: relative;
+  border-radius: 8px;
 
   .item-banner {
     transform: v-bind(styleTranslateX);
     width: 100%;
     flex-shrink: 0;
-
     transition: transform ease-in-out;
     transition-duration: v-bind(transiDurStr);
 
     img {
       width: 100%;
+      height: 100%;
     }
   }
 
   .indicator {
     position: absolute;
+    left: 8px;
     display: flex;
-    justify-content: space-evenly;
-
-    left: 0;
-    right: 0;
+    justify-content: start;
     width: 50%;
-
-    margin: 0 auto;
     bottom: 0.8rem;
 
     li {
-      width: 0.5rem;
-      height: 0.5rem;
-      background: rgba(231, 225, 225, 0.8);
-      border-radius: 50%;
+      width: 8px;
+      height: 4px;
+      border-radius: 6px;
+      margin-right: 4px;
+      background: rgba(255, 255, 255, 1);
     }
 
     .active-li {
-      width: 1rem;
-      border-radius: 0.4rem;
+      width: 18px;
+      height: 4px;
     }
   }
 }

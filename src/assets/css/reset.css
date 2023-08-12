@@ -33,3 +33,10 @@ a {
 img {
     vertical-align: top;
 }
+
+input {
+    border: none;
+    outline: none;
+    background: none;
+    /* 其他样式 */
+}

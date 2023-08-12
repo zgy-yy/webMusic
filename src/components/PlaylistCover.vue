@@ -1,11 +1,11 @@
 <script setup lang="ts">
-import type { RecommendPlaylist } from '@/type/recommentType'
-import { playNumStr } from '@/utils/index'
-import { toRefs } from 'vue'
-import { useRouter } from 'vue-router'
+import type {RecommendPlaylist} from '@/type/recommentType'
+import {playNumStr} from '@/utils/index'
+import {toRefs} from 'vue'
+import {useRouter} from 'vue-router'
 
 const props = defineProps<RecommendPlaylist>()
-const { id, picUrl, name, playCount } = toRefs(props)
+const {id, picUrl, name, playCount} = toRefs(props)
 
 const router = useRouter()
 
@@ -13,7 +13,7 @@ function toPlaylistPage() {
   router.push({
     name: 'playlist',
     params: {
-      id:id.value,
+      id: id.value,
       type: 'songlist'
     }
   })
@@ -23,17 +23,16 @@ function toPlaylistPage() {
 <template>
   <div class="wrapper" @click="toPlaylistPage">
     <div>
-      <img :src="picUrl" :alt="name" />
+      <img :src="picUrl" :alt="name"/>
       <p class="play-count">
-        <span class="listen-icon"> </span>
         <span>
           {{ playNumStr(playCount) }}
         </span>
-        <span> </span>
+        <embed class="icon-play" type="image/svg+xml" src="src/assets/icon/playdot.svg"/>
       </p>
-      <div class="mask"></div>
+
     </div>
-    <p class="paly-name">{{ name }}</p>
+    <p class="play-name">{{ name }}</p>
   </div>
 </template>
 
@@ -41,55 +40,52 @@ function toPlaylistPage() {
 @import '@/assets/css/less/minxin.less';
 
 .wrapper {
-  width: 29%;
-  padding: 0.3rem 0.2rem 0.2rem 0.2rem;
+  width: 120px;
+  height: 158px;
+  margin-right: 16px;
 
   div {
     position: relative;
-
     img {
       width: 100%;
-    }
-
-    .mask {
-      position: absolute;
-      top: 0;
-      width: 100%;
-      padding-top: 100%;
-
-      background-image: url('../assets/img/coverall.png');
-      background-repeat: no-repeat;
-      background-size: 274%;
+      border-radius: 8px;
     }
 
     .play-count {
-      line-height: 1.4rem;
-      height: 1.5rem;
-      color: #ccc;
-      font-size: 0.8rem;
+      background: white;
+      width: 52px;
+      height: 16px;
       position: absolute;
-      width: 100%;
-      bottom: 0;
-      background-repeat: no-repeat;
-      background-image: url('../assets/img/coverall.png');
-      background-size: 400%;
-      background-position: 0 36.6%;
+      right: 6px;
+      border-radius: 10px;
+      bottom: 10px;
+      padding: 0 5px;
+      display: flex;
 
-      .listen-icon {
-        background-clip: padding-box;
-        padding-left: 1rem;
-        background-size: 600%;
-        background-position: 0% 1.6%;
-        background-image: url('../assets/img/sprite_icon.png');
+      span {
+        font-size: 10px;
+        font-weight: 700;
+        letter-spacing: -0.24px;
+        line-height: 16px;
+        color: rgba(45, 45, 45, 1);
+        vertical-align: top;
+      }
+      .icon-play{
+        position: relative;
+        right: -5px;
       }
     }
   }
 
-  .paly-name {
-    font-size: 0.7rem;
-    line-height: 1.5;
-    margin: 0.2rem 0 0.1rem;
-    text-align: start;
+  .play-name {
+    width: 120px;
+    height: 34px;
+    /** 文本 */
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: -0.24px;
+    line-height: 18px;
+    color: rgba(58, 58, 58, 1);
     .two-line-no-wrap();
   }
 }

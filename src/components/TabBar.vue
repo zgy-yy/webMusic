@@ -1,31 +1,42 @@
 <script setup lang="ts">
-import { useRouter } from 'vue-router'
+import {useRoute, useRouter} from 'vue-router'
 import CirclePlay from '@/components/CirclePlay.vue'
 
 const router = useRouter()
 const tabBarData = [
   {
-    name: '推荐',
+    name: '首页',
     path: '/',
-    component: null
+    icon: 'shouye.svg',
+    actIcon:'act-shouye.svg'
+  },
+  {
+    name: '曲库',
+    path: '/my',
+    icon: 'quku.svg',
+    actIcon:'act-quku.svg'
   },
   {
     name: '我的',
     path: '/my',
-    component: null
+    icon: 'wode.svg',
+    actIcon:'act-wode.svg'
   }
 ]
 
 function changePage(path: string) {
   router.push(path)
 }
+const route = useRoute()
+console.log(route.path)
 </script>
 
 <template>
   <div class="wrapper">
     <template v-for="bar in tabBarData" :key="bar.path">
-      <div @click="changePage(bar.path)">
-        <div v-if="bar.name !== '播放'">{{ bar.name }}</div>
+      <div class="item"  @click="changePage(bar.path)">
+        <embed class="icon" type="image/svg+xml" :src="`src/assets/icon/tab-bar/${bar.path===route.path?bar.actIcon:bar.icon}`"/>
+        <span>{{ bar.name }}</span>
       </div>
     </template>
   </div>
@@ -33,13 +44,29 @@ function changePage(path: string) {
 
 <style scoped lang="less">
 .wrapper {
-  background: #93b5b6;
   display: flex;
-  height: 3rem;
+  width: 376px;
+  height: 50px;
   align-items: center;
 
   justify-content: space-around;
-}
 
+  .item{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    .icon{
+      width: 24px;
+    }
+    span{
+      height: 14px;
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: -0.24px;
+      line-height: 14px;
+      color: rgba(120, 120, 120, 1);
+    }
+  }
+}
 
 </style>

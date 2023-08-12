@@ -54,7 +54,7 @@ function setPlay(song: Song) {
 
 <style scoped lang="less">
 .song {
-  background: white;
+  background: #f5efef;
   display: flex;
   padding: 0.6rem;
   height: 2.5rem;

@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { RouterView, useRoute } from 'vue-router'
 import TabBar from '@/components/TabBar.vue'
-import PlayView from '@/views/PlayView.vue'
+import PlayView from '@/views/play/PlayView.vue'
 import useStateStore from '@/stores/stateStore'
 import { storeToRefs } from 'pinia'
 import CirclePlay from '@/components/CirclePlay.vue'
@@ -37,18 +37,22 @@ const { curSong } = storeToRefs(songStore)
 </template>
 
 <style scoped lang="less">
+
+.main-view {
+  position: fixed;
+  top: 0;
+  bottom: 5rem;
+  left: 0;
+  right: 0;
+}
+
 .tab-bar {
   position: fixed;
   width: 100%;
   bottom: 0;
 }
 
-.main-view {
-  top: 0;
-  bottom: 3rem;
-  left: 0;
-  right: 0;
-}
+
 
 .hidden-bar {
   bottom: 0;
@@ -76,7 +80,5 @@ const { curSong } = storeToRefs(songStore)
   transform: translateY(100%);
 }
 
-//.bar-leave-to {
-//  transform: scale(90%);
-//}
+
 </style>

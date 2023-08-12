@@ -1,5 +1,5 @@
 export function playNumStr(num: number) {
-  return Math.floor(num / 10000) + '万'
+  return Math.floor(num / 10000) + 'w'
 }
 
 let audio: HTMLAudioElement

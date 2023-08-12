@@ -2,7 +2,7 @@
 import useSongStore from '@/stores/songStore'
 import { storeToRefs } from 'pinia'
 import { usePlayCircleHook } from '@/hooks/playCircle'
-import PlayView from '@/views/PlayView.vue'
+import PlayView from '@/views/play/PlayView.vue'
 import useStateStore from '@/stores/stateStore'
 
 const songStore = useSongStore()
