@@ -1,23 +1,45 @@
 <script setup lang="ts">
 import type {Song} from "@/type/music";
-import {toRefs} from "vue";
+import {toRaw, toRefs} from "vue";
+import {getLocalUrl} from "@/utils";
+import useSongStore from "@/stores/songStore";
+import {songCanplay} from "@/hooks/playCircle";
+
 
 const props = defineProps<Song>()
-const {name, album, artists} = toRefs(props)
+const {name, album, artists, al, ar} = toRefs(props)
+
+const emits = defineEmits<{
+  (e: 'setSongList'): void
+}>()
+
+
+const songStore = useSongStore()
+
+function setPlay() {
+  const rowSong = toRaw(props)
+  songCanplay(rowSong).then(res => {
+    if (res == 'ok') {
+      songStore.setCurSong(rowSong)
+      emits('setSongList')
+    }
+  })
+
+}
 </script>
 
 <template>
-  <div class="song">
-    <img class="song-pic" :src="album?.picUrl" alt=""/>
+  <div class="song" @click="setPlay">
+    <img class="song-pic" :src="album?.picUrl||al?.picUrl" alt=""/>
     <div class="song-info">
       <p class="no-wrap song-name">{{ name }}</p>
-      <p v-if="artists" class="no-wrap singer">
-        <span v-for="(art,index) in artists" :key="art.name">{{ art.name }}
-        <span v-if="index!==artists.length-1"> / </span>
+      <p v-if="artists||ar" class="no-wrap singer">
+        <span v-for="(art,index) in (artists||ar)" :key="art.name">
+          {{ art.name }}<span v-if="index!==(artists||ar).length-1"> / </span>
         </span>
       </p>
     </div>
-    <embed class="icon-more" type="image/svg+xml" src="src/assets/icon/more.svg"/>
+    <embed class="icon-more" type="image/svg+xml" :src="getLocalUrl('../assets/icon/more.svg')"/>
   </div>
 </template>
 
@@ -26,7 +48,6 @@ const {name, album, artists} = toRefs(props)
   position: relative;
   display: flex;
   height: 64px;
-  width: 300px;
   background: white;
 
   .song-pic {
@@ -42,6 +63,7 @@ const {name, album, artists} = toRefs(props)
     display: flex;
     flex-direction: column;
     justify-content: center;
+    margin-right: 36px;
 
     .song-name {
       font-size: 14px;
@@ -70,7 +92,6 @@ const {name, album, artists} = toRefs(props)
     margin: auto;
     right: 12px;
 
-    //width: 24px;
   }
 }
 

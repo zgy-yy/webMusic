@@ -11,7 +11,7 @@ const useRecommendStore = defineStore('recommend', () => {
     const hotRecommend = ref<RecommendPlaylist[]>([]) //热门歌单推荐
     const newAlbum = ref<AlbumType[]>([]) //新专辑推荐
     const playListRecommend = ref<PlayList[]>([])
-    const newSongs = ref<Song[]>()
+    const newSongs = ref<Song[]>([])
 
     function haveRecommendedPlaylists() {
         return getRecommendedPlaylists().then((list) => {

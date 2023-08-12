@@ -1,8 +1,6 @@
 <script setup lang="ts">
 import useSongStore from '@/stores/songStore'
 import { storeToRefs } from 'pinia'
-import { usePlayCircleHook } from '@/hooks/playCircle'
-import PlayView from '@/views/play/PlayView.vue'
 import useStateStore from '@/stores/stateStore'
 
 const songStore = useSongStore()
@@ -17,7 +15,7 @@ function showPlayer() {
 
 <template>
   <div class="circle-wrapper" @click="showPlayer">
-    <img class="content" :src="curSong?.al.picUrl" alt="" />
+    <img class="content" :src="curSong?.al?.picUrl||curSong?.album?.picUrl" alt="" />
   </div>
 </template>
 

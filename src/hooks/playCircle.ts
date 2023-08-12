@@ -1,53 +1,33 @@
-import { getAudioContext, musicUrl } from '@/utils'
-import { h, ref, render, Transition, watch } from 'vue'
-import { checkMusic } from '@/server/api/song'
-import type { Song } from '@/type/music'
-import useSongStore from '@/stores/songStore'
-import { storeToRefs } from 'pinia'
+import {getAudioContext, musicUrl} from '@/utils'
+import {h, ref, render} from 'vue'
+import type {Song} from '@/type/music'
+import TipsView from "@/hooks/TipsView";
 
 export function usePlayCircleHook() {
-  const audio = getAudioContext()
-  const paused = ref(audio.paused)
+    const audio = getAudioContext()
+    const paused = ref(audio.paused)
 
-  return {
-    audio,
-    paused,
-  }
+    return {
+        audio,
+        paused,
+    }
 }
 
-export function useCheckPlayMusic() {
-  const songStore = useSongStore()
-  const { curSong } = storeToRefs(songStore)
-  const checkFail = ref(false)
-  const popMsg = (value: boolean) => {
-    checkFail.value = value
-    setTimeout(() => {
-      checkFail.value = false
-    }, 1500)
-  }
+export function songCanplay(song: Song) {
+    const audio = getAudioContext()
+    audio.src = musicUrl(song.id)
 
-  watch(curSong, (newVal) => {
-    if (newVal) {
-      checkMusicUrl(newVal)
-    }
-  })
+    return new Promise((resolve, reject) => {
+        audio.play().then(res => {
+            resolve('ok')
+        }).catch((err) => {
+            console.log('->music play error,没有歌曲连接')
+            render(h<{ msg: string }>(TipsView, {msg: '暂无版权'}), document.body)
+            setTimeout(() => {
+                render(null, document.body)
 
-  function checkMusicUrl(song: Song) {
-    checkMusic(song.id).then((res) => {
-      popMsg(!res)
-      if (res) {
-        const audio = getAudioContext()
-        audio.src = musicUrl(song.id)
-        audio.play().catch((err) => {
-          console.log('->music play error,没有歌曲连接')
-          popMsg(true)
+            }, 1000)
+            reject('can not play')
         })
-      }
     })
-  }
-
-  return () =>
-    h(Transition, { name: 'fade' }, () => [
-      checkFail.value ? h('div', { className: 'pop-msg' }, 'error') : null
-    ])
 }

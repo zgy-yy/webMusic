@@ -52,14 +52,10 @@ export interface PlayList {
   cloudTrackCount: number
   ordered: boolean
   description: string
-  tags: undefined[]
-  updateFrequency: null
+  tags: string[]
   backgroundCoverId: number
   backgroundCoverUrl: null
   titleImage: number
-  titleImageUrl: null
-  englishTitle: null
-  officialPlaylistType: null
   copied: boolean
   relateResType: null
   subscribers: {

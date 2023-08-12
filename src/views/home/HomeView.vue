@@ -7,6 +7,7 @@ import {storeToRefs} from 'pinia'
 import {ref} from 'vue'
 import TopBar from "@/views/home/home-components/TopBar.vue";
 import SongItem from "@/components/SongItem.vue";
+import useSongStore from "@/stores/songStore";
 
 const isLoading = ref(true)
 
@@ -19,7 +20,11 @@ recommendStore.haveNewSongs()
 recommendStore.haveRecPlaylist()
 const {hotRecommend, newSongs} = storeToRefs(recommendStore)
 
+const songStore = useSongStore()
 
+function setPlayList() {
+  songStore.setSonglist(newSongs.value)
+}
 </script>
 
 <template>
@@ -57,7 +62,7 @@ const {hotRecommend, newSongs} = storeToRefs(recommendStore)
       </h3>
       <div class="recommend-list new-songs no-scroll-bar">
         <template v-for="itemSong in newSongs">
-          <song-item v-bind="itemSong"></song-item>
+          <song-item @set-song-list="setPlayList" class="song-items" v-bind="itemSong"></song-item>
         </template>
       </div>
     </div>
@@ -71,16 +76,13 @@ const {hotRecommend, newSongs} = storeToRefs(recommendStore)
   overflow-x: hidden;
 
   .banner {
-    margin-top: 8px;
+    margin: 8px 16px;
   }
 
   .section {
-    margin-top: 16px;
-    position: relative;
+    margin: 16px;
     left: 16px;
-    width: 359px;
     height: 190px;
-
     h3 {
       display: flex;
       justify-content: space-between;
@@ -147,10 +149,13 @@ const {hotRecommend, newSongs} = storeToRefs(recommendStore)
   overflow: scroll;
 }
 
-.new-songs{
-  background: #666666;
+.new-songs {
   display: grid;
   grid-template-columns: 1fr 1fr; /* 两列等分宽度 */
+
+  .song-items {
+    width: 300px;
+  }
 }
 
 </style>

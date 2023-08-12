@@ -1,34 +1,36 @@
 <script setup lang="ts">
-import { RouterView, useRoute } from 'vue-router'
+import {RouterView, useRoute} from 'vue-router'
 import TabBar from '@/components/TabBar.vue'
 import PlayView from '@/views/play/PlayView.vue'
 import useStateStore from '@/stores/stateStore'
-import { storeToRefs } from 'pinia'
+import {storeToRefs} from 'pinia'
 import CirclePlay from '@/components/CirclePlay.vue'
 import useSongStore from '@/stores/songStore'
 
 const route = useRoute()
 const stateStore = useStateStore()
-const { showNormalPlayer } = storeToRefs(stateStore)
+const {showNormalPlayer} = storeToRefs(stateStore)
 
 const songStore = useSongStore()
-const { curSong } = storeToRefs(songStore)
+const {curSong} = storeToRefs(songStore)
+
+
 </script>
 
+<!--      :class="!route.meta.hiddenTabBar ? '' : 'hidden-bar'"-->
 <template>
   <router-view
-    class="main-view no-scroll-bar"
-    :class="!route.meta.hiddenTabBar ? '' : 'hidden-bar'"
-    v-slot="{ Component }"
+      class="main-view no-scroll-bar"
+      v-slot="{ Component }"
   >
-    <transition appear :name="route.meta?.transName">
+    <transition>
       <keep-alive exclude="ListView,PlayView">
-        <component :is="Component" />
+        <component :is="Component"/>
       </keep-alive>
     </transition>
   </router-view>
   <transition name="bar">
-    <tab-bar v-if="!route.meta.hiddenTabBar" class="tab-bar" />
+    <tab-bar v-if="!route.meta.hiddenTabBar" class="tab-bar"/>
   </transition>
   <circle-play v-if="curSong"></circle-play>
   <transition name="player">
@@ -51,7 +53,6 @@ const { curSong } = storeToRefs(songStore)
   width: 100%;
   bottom: 0;
 }
-
 
 
 .hidden-bar {

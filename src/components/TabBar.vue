@@ -35,7 +35,7 @@ console.log(route.path)
   <div class="wrapper">
     <template v-for="bar in tabBarData" :key="bar.path">
       <div class="item"  @click="changePage(bar.path)">
-        <embed class="icon" type="image/svg+xml" :src="`src/assets/icon/tab-bar/${bar.path===route.path?bar.actIcon:bar.icon}`"/>
+        <embed class="icon" type="image/svg+xml" :src="`/src/assets/icon/tab-bar/${bar.path===route.path?bar.actIcon:bar.icon}`"/>
         <span>{{ bar.name }}</span>
       </div>
     </template>
