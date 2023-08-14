@@ -14,6 +14,7 @@ export function usePlayCircleHook() {
 }
 
 export function songCanplay(song: Song) {
+
     const audio = getAudioContext()
     audio.src = musicUrl(song.id)
 
@@ -25,7 +26,6 @@ export function songCanplay(song: Song) {
             render(h<{ msg: string }>(TipsView, {msg: '暂无版权'}), document.body)
             setTimeout(() => {
                 render(null, document.body)
-
             }, 1000)
             reject('can not play')
         })

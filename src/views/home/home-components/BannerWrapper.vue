@@ -43,7 +43,6 @@ setInterval(() => {
 
 <style scoped lang="less">
 .wrapper {
-  height: 160px;
   background: #666666;
   margin: 0 auto;
   display: flex;

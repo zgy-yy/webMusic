@@ -1,26 +1,24 @@
 <script setup lang="ts">
 import useSongStore from '@/stores/songStore'
 import {storeToRefs} from 'pinia'
-import {computed, reactive, ref, toRefs, watch} from 'vue'
+import {computed, ref} from 'vue'
 import {usePlayCircleHook} from '@/hooks/playCircle'
 import useStateStore from '@/stores/stateStore'
-import SongsList from '@/components/playlist/SongsList.vue'
 import NavBar from "@/views/play/play-components/NavBar.vue";
 import LyricWrapper from "@/views/play/play-components/LyricWrapper.vue";
 import ProcessBar from "@/views/play/play-components/ProcessBar.vue";
+import CurPlayingPlaylist from "@/components/CurPlayingPlaylist.vue";
+import {useRoute} from "vue-router";
 
 const songStore = useSongStore()
-const {curSong, lyric, songList} = storeToRefs(songStore)
+const {curSong} = storeToRefs(songStore)
 
 const bgUrl = computed(() => `url('${curSong.value?.al?.picUrl || curSong.value?.album?.picUrl}')`)
 const stateStore = useStateStore()
-const {animationState} = storeToRefs(stateStore)
-
+const {animationState, showNormalPlayer} = storeToRefs(stateStore)
 
 const showSonglist = ref(false)
-function closeList() {
-  showSonglist.value = false
-}
+
 function openSonglist() {
   showSonglist.value = true
 }
@@ -35,7 +33,10 @@ audio.addEventListener('play', () => {
 audio.addEventListener('ended', () => {
   animationState.value = 'paused'
   paused.value = true
-  nextSong()
+})
+audio.addEventListener('error',()=>{
+  animationState.value = 'paused'
+  paused.value = true
 })
 
 // const
@@ -56,61 +57,111 @@ function preSong() {
 }
 
 function nextSong() {
-
   songStore.nextSong()
 }
 
+const transStart = ref('translate(0,0)')
+
+const route = useRoute()
+console.log(route)
+
+function onenter(el: HTMLElement, done: () => void) {
+  const rect = el.getBoundingClientRect()
+  transStart.value = `translate(calc(48px - 8px - 50vw),calc(${rect.bottom + rect.height - 48 - 16}px))`
+  el.classList.add('show-img')
+  setTimeout(() => {
+    done()
+  }, 1000)
+}
+
+function onafterEnter(el: HTMLElement) {
+  el.classList.remove('show-img')
+}
 
 </script>
 
 <template>
-  <div class="main">
-    <div class="bg-view"></div>
-    <div class="play-view" @click="closeList">
-      <nav-bar :song="curSong"/>
-      <!--      circle-->
-      <div class="circle-wrapper">
-        <img :src="curSong?.al?.picUrl||curSong?.album?.picUrl" alt=""/>
-      </div>
-      <!--lyric-->
-      <lyric-wrapper class="lyric"/>
-      <process-bar/>
-      <!--      options-->
-
-      <div class="options">
-        <img src="./assets/icons/loop.svg" alt="">
-        <img @click="preSong" src="./assets/icons/previous.svg" alt="">
-        <img @click="playMode"
-             :src="paused?'/src/views/play/assets/icons/play.svg':'/src/views/play/assets/icons/pause.svg' " alt="">
-        <img @click="nextSong" src="./assets/icons/next.svg" alt="">
-        <img @click.stop="openSonglist" src="./assets/icons/list.svg" alt="">
-      </div>
-
-      <transition name="list">
-        <div v-if="showSonglist" class="song-list">
+  <transition appear name="page">
+    <div v-if="showNormalPlayer" class="main">
+      <div class="bg-view"></div>
+      <div class="play-view">
+        <nav-bar :song="curSong"/>
+        <!--      circle-->
+        <div class="circle-wrapper">
+          <transition appear
+                      @enter="onenter"
+                      @afterEnter="onafterEnter"
+          >
+            <img v-if="showNormalPlayer" class="circle-img" :src="curSong?.al?.picUrl||curSong?.album?.picUrl"
+                 alt=""/>
+          </transition>
         </div>
-      </transition>
-    </div>
-  </div>
-</template>
+        <!--lyric-->
+        <lyric-wrapper class="ly"/>
+        <process-bar/>
+        <!--      options-->
 
+        <div class="options">
+          <img src="./assets/icons/loop.svg" alt="">
+          <img @click="preSong" src="./assets/icons/previous.svg" alt="">
+          <img @click="playMode"
+               :src="paused?'/src/views/play/assets/icons/play.svg':'/src/views/play/assets/icons/pause.svg' "
+               alt="">
+          <img @click="nextSong" src="./assets/icons/next.svg" alt="">
+          <img @click.stop="openSonglist" src="./assets/icons/list.svg" alt="">
+        </div>
+
+        <transition name="surface">
+          <div v-if="showSonglist" class="song-list" @click="()=>showSonglist=false">
+            <cur-playing-playlist class="lists"/>
+          </div>
+        </transition>
+      </div>
+    </div>
+  </transition>
+
+</template>
 <style scoped lang="less">
+
+.page-enter-active,
+.page-leave-active {
+  transition: all 0.6s linear;
+}
+
+.page-enter-from,
+.page-leave-to {
+  opacity: 0;
+}
+
+.page-leave-active {
+  .circle-img {
+    transition: all 0.6s linear;
+    animation: none !important;
+  }
+
+}
+
+.page-leave-to {
+
+  .circle-img {
+    width: 48px !important;
+    height: 48px !important;
+    border-radius: 0 !important;
+    transform: v-bind(transStart)
+  }
+
+}
+
 .main {
-  position: fixed;
-  background: white;
-  top: 0;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  z-index: 999;
+  background: #ffffff;
+  height: 100%;
 }
 
 .bg-view {
+  z-index: -1;
+  height: 100%;
+  width: 100%;
   position: absolute;
-  top: 0;
-  bottom: 0;
-  left: 0;
-  right: 0;
   background-image: v-bind(bgUrl);
   background-position: center;
   background-size: 260%;
@@ -119,37 +170,42 @@ function nextSong() {
 }
 
 .play-view {
-  background: rgba(255, 255, 255, 0.7);
-  position: fixed;
-  top: 0;
-  bottom: 0;
-  width: 100%;
-  overflow: hidden;
+  height: 100%;
+  background: rgba(243, 237, 237, 0.11);
   display: flex;
   flex-direction: column;
 
-  .lyric {
-    flex-grow: 1;
-  }
 
   .circle-wrapper {
+    width: 100vw;
     text-align: center;
-    margin-top: 24px;
-    animation: show-circle ease-in-out 1s 1;
+    margin: 16px auto;
+    flex-shrink: 0;
+    height: 69vw;
 
-    img {
+    .circle-img {
       animation: playCircle 20s infinite linear;
       animation-play-state: v-bind(animationState);
-      width: 15rem;
-      height: 15rem;
+      width: 69vw;
+      height: 69vw;
       border-radius: 50%;
       border: 0.5rem solid rgba(248, 242, 242, 0.37);
     }
+
+    .show-img {
+      animation: show-circle 1s 1 linear;
+    }
+
+  }
+
+  .ly {
+    flex: 1;
   }
 
   .options {
+    flex-shrink: 0;
     display: flex;
-    margin: 10px auto 30px auto;
+    margin: 5px auto 20px auto;
     width: 296px;
     height: 56px;
     justify-content: space-around;
@@ -163,16 +219,30 @@ function nextSong() {
   position: absolute;
   bottom: 0;
   width: 100%;
-  height: 20rem;
-  overflow: scroll;
+  .lists{
+    margin-top: 100%;
+    padding: 0 32px;
+    height: 20rem;
+    overflow: scroll;
+    background: white;
+  }
 }
+
 
 @keyframes show-circle {
   0% {
-    transform: scale(30%);
+    width: 48px;
+    height: 48px;
+    border-radius: 0;
+    transform: v-bind(transStart)
+  }
+  30% {
+    border-radius: 50%;
+
   }
   100% {
-    transform: scale(100%);
   }
 }
+
+
 </style>

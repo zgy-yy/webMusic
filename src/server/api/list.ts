@@ -14,7 +14,6 @@ export function getListDetail(id: number) {
       }
     })
     .then((res) => {
-      console.log(res)
       if (res.code == 200) {
         return res.playlist
       }

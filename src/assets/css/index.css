@@ -4,10 +4,16 @@
 @import "../font/iconfont.css";
 @import "animation.css";
 
-#app {
-    width: 100vw;
-}
-
 body {
     overscroll-behavior: none;
 }
+
+#app {
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    width: 100vw;
+    display: flex;
+    flex-direction: column;
+}
+

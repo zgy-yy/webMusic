@@ -1,12 +1,12 @@
-import {defineComponent, defineProps, toRefs} from "vue";
-
+import {defineComponent} from "vue";
+import type {CSSProperties} from 'vue'
 
 export default defineComponent<{ msg: string }>((props, ctx) => {
-    const className = {
+    const className: CSSProperties = {
         position: 'fixed',
         inset: '0px',
         margin: 'auto',
-        width:'100px',
+        width: '100px',
         background: '#f1f3f4',
         textAlign: 'center',
         lineHeight: '32px',

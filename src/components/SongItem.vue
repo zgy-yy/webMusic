@@ -14,16 +14,13 @@ const emits = defineEmits<{
 }>()
 
 
+
 const songStore = useSongStore()
 
 function setPlay() {
   const rowSong = toRaw(props)
-  songCanplay(rowSong).then(res => {
-    if (res == 'ok') {
-      songStore.setCurSong(rowSong)
-      emits('setSongList')
-    }
-  })
+  songStore.setCurSong(rowSong)
+  emits('setSongList')
 
 }
 </script>

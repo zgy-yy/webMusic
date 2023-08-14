@@ -1,14 +1,16 @@
-.home-enter-active
-{
+.home-enter-active {
     transition: transform .6s cubic-bezier(1, 0.5, 0.8, 1);
 }
-.home-leave-active{
+
+.home-leave-active {
     transition: transform .6s ease-out;
     z-index: 99;
 }
-.home-enter-from{
+
+.home-enter-from {
     transform: scale(90%);
 }
+
 .home-leave-to {
     transform: translateX(100%);
 }
@@ -22,9 +24,21 @@
     transition: transform .6s cubic-bezier(1, 0.5, 0.8, 1);
 }
 
-.playlist-enter-from{
+.playlist-enter-from {
     transform: translateX(100%);
 }
+
 .playlist-leave-to {
     transform: scale(90%);
+}
+
+/*播放歌单列表过度*/
+.surface-enter-active,
+.surface-leave-active {
+    transition: transform 0.6s ease;
+}
+
+.surface-enter-from,
+.surface-leave-to {
+    transform: translateY(100%);
 }

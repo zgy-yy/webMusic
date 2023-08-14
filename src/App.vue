@@ -2,14 +2,12 @@
 import {RouterView, useRoute} from 'vue-router'
 import TabBar from '@/components/TabBar.vue'
 import PlayView from '@/views/play/PlayView.vue'
-import useStateStore from '@/stores/stateStore'
 import {storeToRefs} from 'pinia'
-import CirclePlay from '@/components/CirclePlay.vue'
+import MimiPlayer from '@/components/MimiPlayer.vue'
 import useSongStore from '@/stores/songStore'
 
 const route = useRoute()
-const stateStore = useStateStore()
-const {showNormalPlayer} = storeToRefs(stateStore)
+
 
 const songStore = useSongStore()
 const {curSong} = storeToRefs(songStore)
@@ -23,40 +21,41 @@ const {curSong} = storeToRefs(songStore)
       class="main-view no-scroll-bar"
       v-slot="{ Component }"
   >
-    <transition>
-      <keep-alive exclude="ListView,PlayView">
-        <component :is="Component"/>
-      </keep-alive>
-    </transition>
+    <keep-alive exclude="ListView,SongListView">
+      <component :is="Component"/>
+    </keep-alive>
   </router-view>
-  <transition name="bar">
-    <tab-bar v-if="!route.meta.hiddenTabBar" class="tab-bar"/>
-  </transition>
-  <circle-play v-if="curSong"></circle-play>
-  <transition name="player">
-    <play-view v-if="showNormalPlayer"></play-view>
-  </transition>
+  <mimi-player class="mini-player" v-if="curSong"></mimi-player>
+  <!--  <transition name="bar">-->
+  <tab-bar v-if="!route.meta.hiddenTabBar" class="tab-bar"/>
+  <!--  </transition>-->
+  <play-view class="normal-player"></play-view>
 </template>
 
 <style scoped lang="less">
 
 .main-view {
-  position: fixed;
-  top: 0;
-  bottom: 5rem;
-  left: 0;
-  right: 0;
+  flex: 1;
+}
+
+.mini-player {
 }
 
 .tab-bar {
-  position: fixed;
-  width: 100%;
-  bottom: 0;
-}
 
+  width: 100%;
+}
 
 .hidden-bar {
   bottom: 0;
+}
+
+.normal-player {
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
 }
 
 .bar-leave-active,
@@ -70,16 +69,17 @@ const {curSong} = storeToRefs(songStore)
   transform: translateY(100%);
 }
 
-.player-leave-active,
-.player-enter-active {
-  transition: transform 0.6s cubic-bezier(1, 0.5, 0.8, 1);
-  z-index: 99;
-}
-
-.player-leave-to,
-.player-enter-from {
-  transform: translateY(100%);
-}
+//
+//.player-leave-active,
+//.player-enter-active {
+//  transition: transform 0.6s cubic-bezier(1, 0.5, 0.8, 1);
+//  z-index: 99;
+//}
+//
+//.player-leave-to,
+//.player-enter-from {
+//  transform: translateY(100%);
+//}
 
 
 </style>

@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import {useRoute, useRouter} from 'vue-router'
-import CirclePlay from '@/components/CirclePlay.vue'
+import CirclePlay from '@/components/MimiPlayer.vue'
 
 const router = useRouter()
 const tabBarData = [
@@ -59,6 +59,7 @@ console.log(route.path)
       width: 24px;
     }
     span{
+      margin-top: 4px;
       height: 14px;
       font-size: 10px;
       font-weight: 700;

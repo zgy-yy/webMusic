@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import {computed, ref, toRefs} from 'vue'
+import {computed, onActivated, onMounted, ref, toRefs} from 'vue'
 import useListStore from '@/stores/listStore'
 import {storeToRefs} from 'pinia'
 import {useRouter} from 'vue-router'
@@ -7,66 +7,30 @@ import type {ComputedRef} from 'vue'
 import SongItem from "@/components/SongItem.vue";
 import useSongStore from "@/stores/songStore";
 
-const props = defineProps<{ type: string; id: string }>()
-const {type, id} = toRefs(props)
+const props = defineProps<{ id: string }>()
+const {id} = toRefs(props)
 
 const songStore = useSongStore()
 
 const isLoading = ref(true)
 const listStore = useListStore()
-const {playlistDetail, albumDetail, singerDetail} = storeToRefs(listStore)
+const {playlistDetail} = storeToRefs(listStore)
 
+const imgUrl: ComputedRef = computed(() => (playlistDetail.value?.coverImgUrl))
+const bgUrl: ComputedRef = computed(() => (`url(${playlistDetail.value?.coverImgUrl})`))
+const songs: ComputedRef = computed(() => (playlistDetail.value?.tracks))
 
-const detail = ref({
-  name: '',
-  description: ''
+listStore.getPlaylistDetail(Number(id.value)).then(() => {
+  isLoading.value = false
 })
-
-let imgUrl: ComputedRef
-let bgUrl: ComputedRef
-let songs: ComputedRef
-if (type.value == 'songlist') {
-  listStore.getPlaylistDetail(Number(id.value)).then(() => {
-    isLoading.value = false
-    detail.value.name = <string>playlistDetail.value?.name
-    detail.value.description = <string>playlistDetail.value?.description
-  })
-  imgUrl = computed(() => playlistDetail.value?.coverImgUrl)
-  bgUrl = computed(() => `url('${playlistDetail.value?.coverImgUrl}')`)
-  songs = computed(() => {
-    return playlistDetail.value?.tracks ?? []
-  })
-  console.log(songs)
-}
-if (type.value == 'album') {
-  listStore.getDetailAlbum(Number(id.value)).then(() => {
-    isLoading.value = false
-  })
-  imgUrl = computed(() => albumDetail.value?.album.picUrl)
-  bgUrl = computed(() => `url('${albumDetail.value?.album.picUrl}')`)
-  songs = computed(() => {
-    return albumDetail.value?.songs ?? []
-  })
-}
-if (type.value == 'singer') {
-  listStore.getDeatilSinger(Number(id.value)).then(() => {
-    isLoading.value = false
-  })
-  imgUrl = computed(() => singerDetail.value?.artist.picUrl)
-  bgUrl = computed(() => `url('${singerDetail.value?.artist.picUrl}')`)
-  songs = computed(() => {
-    return singerDetail.value?.hotSongs ?? []
-  })
-}
 
 const router = useRouter()
 
 function goBack() {
-  console.log(1)
   router.back()
 }
 
-function setSonglist() {
+function setSongList() {
   songStore.setSonglist(songs.value)
 }
 
@@ -75,8 +39,9 @@ const switchItems = [
   {name: '单曲', active: true},
   {name: '评论', active: false}
 ]
-
 // switch end
+const show = ref(false)
+
 </script>
 
 <!--歌单列表-->
@@ -91,7 +56,7 @@ const switchItems = [
         </p>
         <img :src="imgUrl" alt=""/>
         <div>
-          <p class="no-wrap name"> {{ detail.name }}</p>
+          <p class="no-wrap name"> {{ playlistDetail?.name }}</p>
         </div>
         <div class="switch-bar">
           <template v-for="item in switchItems">
@@ -111,17 +76,16 @@ const switchItems = [
           <img src="/src/assets/icon/select.svg">
         </p>
       </div>
-      <template v-for="item in songs">
-        <song-item @set-song-list="setSonglist" class="song-item" v-bind="item"></song-item>
+      <template v-for="item in songs" :key="item.name">
+        <song-item @set-song-list="setSongList" class="song-item" v-bind="item"></song-item>
       </template>
     </div>
   </div>
 </template>
 
 <style scoped lang="less">
+
 .list-main {
-  position: fixed;
-  background: white;
   display: flex;
   flex-direction: column;
   overflow-y: hidden;
@@ -149,7 +113,7 @@ const switchItems = [
   .top-content {
     text-align: center;
     position: absolute;
-    background-color: rgba(255, 255, 255, 0.68);
+    background-color: rgba(255, 255, 255, 0.62);
     height: 344px;
     width: 100%;
 

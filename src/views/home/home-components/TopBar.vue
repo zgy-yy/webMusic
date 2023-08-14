@@ -10,13 +10,13 @@
       <input placeholder="搜索"/>
     </span>
     <embed class="icon icon-scan" type="image/svg+xml" src="src/assets/icon/scan.svg"/>
-    <embed class="icon" type="image/svg+xml" src="src/assets/icon/listen.svg"/>
+    <embed class="icon icon-listen" type="image/svg+xml" src="src/assets/icon/listen.svg"/>
   </div>
 </template>
 
 <style scoped lang="less">
 .main-top {
-  width: 375px;
+  width: 100%;
   height: 44px;
   display: flex;
   align-items: center;
@@ -28,6 +28,7 @@
   }
 
   .input-bar {
+    flex: 1;
     margin-left: calc(64px - 16px - 24px);
     border-radius: 20px;
     height: 28px;
@@ -49,5 +50,8 @@
 .icon-scan {
   margin-left: 24px;
   margin-right: 12px;
+}
+.icon-listen{
+  margin-right: 16px;
 }
 </style>

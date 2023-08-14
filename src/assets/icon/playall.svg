@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24" height="24"
+     viewBox="0 0 24 24" fill="none">
+    <g opacity="1" transform="translate(0 0)  rotate(0)">
+        <path id="Rectangle 22" fill-rule="evenodd" style="fill:#F6F6F6" opacity="0"
+              d="M0 24L24 24L24 0L0 0L0 24Z"></path>
+        <g opacity="1" transform="translate(3 3)  rotate(0)">
+            <path id="Vector" style="fill:#1574FF; opacity:1;"
+                  d="M9,1c-4.41828,0 -8,3.58172 -8,8c0,4.4183 3.58172,8 8,8c4.4183,0 8,-3.5817 8,-8c0,-4.41828 -3.5817,-8 -8,-8zM9,-1c5.5228,0 10,4.47715 10,10c0,5.5228 -4.4772,10 -10,10c-5.52285,0 -10,-4.4772 -10,-10c0,-5.52285 4.47715,-10 10,-10z"></path>
+            <path id="Vector" fill-rule="evenodd" style="fill:#00CEFF" opacity="1"
+                  d="M12.22 8.17001L8.37999 5.61001C7.71999 5.19001 6.85999 5.64001 6.85999 6.42001L6.85999 11.54C6.85999 12.32 7.72999 12.77 8.37999 12.35L12.22 9.79001C12.79 9.41001 12.79 8.55001 12.22 8.17001Z"></path>
+        </g>
+    </g>
+</svg>

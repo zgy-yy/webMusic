@@ -57,14 +57,9 @@ audio.addEventListener('timeupdate', () => {
 <style scoped lang="less">
 //lyric
 .lyric {
-  flex-grow: 1;
-  flex-shrink: 1;
-  margin-top: 1.8rem;
-  margin-bottom: 2rem;
-  color: #cccccc;
+  color: #5e5e5e;
   text-align: center;
   overflow: hidden;
-
   .lyric-wrapper {
     height: 100%;
     transform: translateY(50%);
@@ -78,11 +73,14 @@ audio.addEventListener('timeupdate', () => {
       box-sizing: border-box;
       line-height: 1.4rem;
       padding: 0.3rem;
+      width: 90%;
+      margin: 0 auto;
     }
   }
 
   .activeLi {
     color: #1574ff;
+    transform: scale(1.2);
   }
 }
 </style>

@@ -11,10 +11,9 @@ const router = useRouter()
 
 function toPlaylistPage() {
   router.push({
-    name: 'playlist',
+    name: 'songPlaylist',
     params: {
-      id: id.value,
-      type: 'songlist'
+      id: id.value
     }
   })
 }

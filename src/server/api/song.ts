@@ -23,6 +23,7 @@ export function getLyric(id: number) {
       }
     })
     .then((res) => {
+
       return res.lrc
     })
 }

@@ -12,20 +12,20 @@ const playTime = reactive({
   total: '00:00'
 })
 
-const tranX = ref('translateX(-100}%)')
+const tranX = ref('translateX(-100%)')
 audio.addEventListener('timeupdate', () => {
+
   playTime.total = formatTime(audio.duration)
   playTime.cur = formatTime(audio.currentTime)
 
   let percent = (audio.currentTime / audio.duration) * 100
   if (isNaN(percent)) {
-    tranX.value = 'translateX(-100}%)'
+    tranX.value = 'translateX(-100%)'
   } else {
     tranX.value = `translateX(${percent - 100}%)`
   }
 })
 const TouchBar = {
-  moving: false,
   offsetTime: 0
 }
 
@@ -37,13 +37,14 @@ let barSize = {
 }
 
 function onTouchStart(ev: TouchEvent) {
-  TouchBar.moving = true
   if (procRef.value) {
     const processBar = procRef.value?.parentElement
-    const {left, right, width} = processBar.getBoundingClientRect()
-    barSize.left = left
-    barSize.right = right
-    barSize.width = width
+    if (processBar) {
+      const {left, right, width} = processBar.getBoundingClientRect()
+      barSize.left = left
+      barSize.right = right
+      barSize.width = width
+    }
   }
 }
 
@@ -56,7 +57,6 @@ function onTouchMove(ev: TouchEvent) {
   } else if (touchX < barSize.left) {
     touchX = barSize.left
   }
-  console.log(touchX)
   let offset = touchX - barSize.left
   if (procRef.value) {
     const target: HTMLSpanElement = procRef.value
@@ -68,15 +68,17 @@ function onTouchMove(ev: TouchEvent) {
 }
 
 function onTouchEnd(ev: TouchEvent) {
-  TouchBar.moving = false
   audio.currentTime = TouchBar.offsetTime
+  if (procRef.value) {
+    const target: HTMLSpanElement = procRef.value
+    target.style.removeProperty('transform')
+  }
 }
 </script>
 
 <template>
   <div class="process">
     <p class="process-bar">
-      <!--      <span class="back-bar"></span>-->
       <span ref="procRef" class="bar-wrapper">
             <span
                 @touchstart.prevent="onTouchStart"

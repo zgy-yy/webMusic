@@ -34,7 +34,6 @@ function close() {
 
 <style scoped lang="less">
 .title {
-
   text-align: center;
   height: 44px;
   font-weight: 1000;
