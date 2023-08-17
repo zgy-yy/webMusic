@@ -13,20 +13,38 @@ const router = createRouter({
             }
         },
         {
-            path: '/my',
-            name: 'my',
-            component: () => import('../views/MyView.vue')
-        },
-        {
             path: '/songPlaylist/:id',//歌单详情页
             props: true, //将参数设置成组件属性
             name: 'songPlaylist',
             component: () => import('../views/list/SongListView.vue'),
             meta: {
-                hiddenTabBar: true,
-                transName: 'playlist'
+                hiddenTabBar: true
             }
-        }
+        },
+        {
+            path: '/singerDetails/:id',//歌单详情页
+            props: true, //将参数设置成组件属性
+            name: 'singerDetailList',
+            component: () => import('../views/list/SingerListView.vue'),
+            meta: {
+                hiddenTabBar: true
+            }
+        },
+        {
+            path: '/lib',
+            name: 'lib',
+            component: () => import('../views/library/LibView.vue'),
+            children: [
+                {path: '', name: 'singer', component: () => import('../views/library/lib-components/SingerPage.vue')},
+                {path: 'musicList', name: 'musicList', component: () => import('../views/library/lib-components/MusicListPage.vue')},
+                {path: 'album', name: 'album', component: () => import('../views/library/lib-components/AlbumPage.vue')}
+            ]
+        },
+        {
+            path: '/my',
+            name: 'my',
+            component: () => import('../views/my/MyView.vue')
+        },
     ]
 })
 

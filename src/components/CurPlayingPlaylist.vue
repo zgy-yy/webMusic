@@ -2,8 +2,8 @@
 import useSongStore from "@/stores/songStore";
 import {storeToRefs} from "pinia";
 import type {Song} from "@/type/music";
-import {songCanplay} from "@/hooks/playCircle";
-import {ref, watch} from "vue";
+import {nextTick, onMounted, ref, watch} from "vue";
+import VScroll from "@/components/VScroll.vue";
 
 const songStore = useSongStore()
 const {curSong, songList} = storeToRefs(songStore)
@@ -15,46 +15,62 @@ watch(curSong, (newSong) => {
   curindex.value = songList.value.findIndex(item => {
     return item.id == newSong?.id
   })
-  console.log(curindex)
 }, {immediate: true})
 
 
 function onclickSong(song: Song) {
-  console.log(curindex.value)
-  songCanplay(song).then((res => {
-    if (res == 'ok') {
-      songStore.setCurSong(song)
-    }
-  }))
+  songStore.setCurSong(song)
 }
 
+const listRef = ref<HTMLElement>()
+const scrollTo = ref(0)
 
+nextTick(() => {
+  if (listRef.value) {
+    const listEl = listRef.value
+    const liEl = listEl?.querySelector('.item')
+    const liRect = liEl?.getBoundingClientRect()
+    if (liRect) {
+      const scrollIndex = curindex.value > 2 ? curindex.value - 2 : 0
+      scrollTo.value = -scrollIndex * liRect.height
+    }
+
+  }
+
+})
 </script>
 
 <template>
-  <ul>
-    <li @click="onclickSong(item)" v-for="(item,index) in songList" class="item" :key="item.name">
-      <p class="index" :class="curindex==index?'act-index':''">
-        <span>{{ index }}</span>
-      </p>
-      <div class="song-info">
-        <p class="no-wrap song-name">{{ item.name }}</p>
-        <p v-if="item.artists||item.ar" class="no-wrap singer">
+  <div class="main-box" ref="listRef">
+    <v-scroll :scroll-to="scrollTo">
+      <div @click="onclickSong(item)" v-for="(item,index) in songList" class="item" :key="item.name">
+        <p class="index" :class="curindex==index?'act-index':''">
+          <span>{{ index }}</span>
+        </p>
+        <div class="song-info">
+          <p class="no-wrap song-name">{{ item.name }}</p>
+          <p v-if="item.artists||item.ar" class="no-wrap singer">
         <span v-for="(art,index) in (item.artists||item.ar)" :key="art.name">
           {{ art.name }}<span v-if="index!==(item.artists||item.ar).length-1"> / </span>
         </span>
-        </p>
+          </p>
+        </div>
       </div>
-    </li>
-  </ul>
+    </v-scroll>
+  </div>
+
 </template>
 
 <style scoped lang="less">
+.main-box {
+  overflow: scroll;
+}
 
 .item {
   display: flex;
   padding: 8px;
   align-items: center;
+  overflow: hidden;
 
   .index {
 

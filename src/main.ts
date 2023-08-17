@@ -12,6 +12,5 @@ const app = createApp(App)
 app.directive('loading',loading)
 app.use(createPinia())
 app.use(router)
-
 app.mount('#app')
 

@@ -9,6 +9,7 @@ import TopBar from "@/views/home/home-components/TopBar.vue";
 import SongItem from "@/components/SongItem.vue";
 import useSongStore from "@/stores/songStore";
 
+
 const isLoading = ref(true)
 
 const recommendStore = useRecommendStore()
@@ -62,7 +63,10 @@ function setPlayList() {
       </h3>
       <div class="recommend-list new-songs no-scroll-bar">
         <template v-for="itemSong in newSongs">
-          <song-item @set-song-list="setPlayList" class="song-items" v-bind="itemSong"></song-item>
+          <song-item  @set-song-list="setPlayList" class="song-items" :name="itemSong.name"
+                     :id="itemSong.id"
+                     :singer="itemSong.artists" :mp3-url="itemSong.mp3Url" :pic="itemSong.album.picUrl"
+          ></song-item>
         </template>
       </div>
     </div>
@@ -83,6 +87,7 @@ function setPlayList() {
     margin: 16px;
     left: 16px;
     height: 190px;
+
     h3 {
       display: flex;
       justify-content: space-between;

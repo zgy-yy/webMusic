@@ -5,14 +5,24 @@ import PlayView from '@/views/play/PlayView.vue'
 import {storeToRefs} from 'pinia'
 import MimiPlayer from '@/components/MimiPlayer.vue'
 import useSongStore from '@/stores/songStore'
+import {reactive, ref} from "vue";
 
 const route = useRoute()
-
-
 const songStore = useSongStore()
 const {curSong} = storeToRefs(songStore)
 
+const normalPlayerShow = ref(false)
 
+const startPosi = reactive({
+  x: 0,
+  y: 0
+})
+
+function showNormalPlayer(props: { x: number, y: number }) {
+  startPosi.x = props.x
+  startPosi.y = props.y
+  normalPlayerShow.value = true
+}
 </script>
 
 <!--      :class="!route.meta.hiddenTabBar ? '' : 'hidden-bar'"-->
@@ -21,15 +31,14 @@ const {curSong} = storeToRefs(songStore)
       class="main-view no-scroll-bar"
       v-slot="{ Component }"
   >
-    <keep-alive exclude="ListView,SongListView">
+    <keep-alive exclude="ListView,SongListView,SingerListView">
       <component :is="Component"/>
     </keep-alive>
   </router-view>
-  <mimi-player class="mini-player" v-if="curSong"></mimi-player>
-  <!--  <transition name="bar">-->
+  <mimi-player @click-me="props => {showNormalPlayer(props)}" class="mini-player" v-if="curSong"></mimi-player>
   <tab-bar v-if="!route.meta.hiddenTabBar" class="tab-bar"/>
-  <!--  </transition>-->
-  <play-view class="normal-player"></play-view>
+  <play-view :x="startPosi.x" :y="startPosi.y" @close-me="() => normalPlayerShow=false" :show-me="normalPlayerShow"
+             class="normal-player"></play-view>
 </template>
 
 <style scoped lang="less">

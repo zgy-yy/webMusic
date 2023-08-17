@@ -1,18 +1,15 @@
 <script setup lang="ts">
-import type {Song} from "@/type/music";
 import {toRaw, toRefs} from "vue";
 import {getLocalUrl} from "@/utils";
 import useSongStore from "@/stores/songStore";
-import {songCanplay} from "@/hooks/playCircle";
 
 
-const props = defineProps<Song>()
-const {name, album, artists, al, ar} = toRefs(props)
+const props = defineProps<{ name: string, id: number, pic: string, singer: { name: string }[] }>()
+const {name, id, pic, singer} = toRefs(props)
 
 const emits = defineEmits<{
   (e: 'setSongList'): void
 }>()
-
 
 
 const songStore = useSongStore()
@@ -26,13 +23,14 @@ function setPlay() {
 </script>
 
 <template>
-  <div class="song" @click="setPlay">
-    <img class="song-pic" :src="album?.picUrl||al?.picUrl" alt=""/>
+  <div class="song" @click="setPlay" :key="id">
+    <img class="song-pic" :src="pic??'/src/assets/icon/none.svg'" alt="">
+    <!--    <img class="song-pic" :src="album?.picUrl||al?.picUrl" alt=""/>-->
     <div class="song-info">
       <p class="no-wrap song-name">{{ name }}</p>
-      <p v-if="artists||ar" class="no-wrap singer">
-        <span v-for="(art,index) in (artists||ar)" :key="art.name">
-          {{ art.name }}<span v-if="index!==(artists||ar).length-1"> / </span>
+      <p class="no-wrap singer">
+        <span v-for="(art,index) in singer" :key="art.name">
+          {{ art.name }}<span v-if="index!==singer.length-1"> / </span>
         </span>
       </p>
     </div>

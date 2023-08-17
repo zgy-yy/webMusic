@@ -17,7 +17,6 @@ export interface Song {
     }[]
     album?: { picUrl: string, blurPicUrl: string }
 }
-
 export interface Lyric {
     sgc?: boolean
     sfy?: boolean

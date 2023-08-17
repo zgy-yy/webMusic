@@ -49,9 +49,7 @@ function onTouchStart(ev: TouchEvent) {
 }
 
 function onTouchMove(ev: TouchEvent) {
-  console.log(barSize)
   let touchX = ev.touches[0].pageX
-
   if (touchX > barSize.right) {
     touchX = barSize.right
   } else if (touchX < barSize.left) {

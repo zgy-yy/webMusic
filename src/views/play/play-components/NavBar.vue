@@ -1,19 +1,18 @@
 <script setup lang="ts">
 import {toRefs} from "vue";
-import {storeToRefs} from "pinia";
 
-import useStateStore from "@/stores/stateStore";
 import type {Song} from "@/type/music";
 
 const props = defineProps<{ song: Song }>()
 const {song} = toRefs(props)
-const stateStore = useStateStore()
-const {showNormalPlayer} = storeToRefs(stateStore)
+
+const emits = defineEmits<{
+  (name: 'close'): void
+}>()
 
 function close() {
-  showNormalPlayer.value = false
+  emits('close')
 }
-
 
 </script>
 

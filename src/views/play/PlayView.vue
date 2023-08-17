@@ -8,14 +8,27 @@ import NavBar from "@/views/play/play-components/NavBar.vue";
 import LyricWrapper from "@/views/play/play-components/LyricWrapper.vue";
 import ProcessBar from "@/views/play/play-components/ProcessBar.vue";
 import CurPlayingPlaylist from "@/components/CurPlayingPlaylist.vue";
-import {useRoute} from "vue-router";
+
+const props = defineProps<{//mimiplayer img初始位置 用于过渡动画
+  x: number,
+  y: number,
+  showMe: boolean
+}>()
+
+const emits = defineEmits<{
+  (name: 'closeMe'): void
+}>()
+
+function closeMe() {
+  emits('closeMe')
+}
 
 const songStore = useSongStore()
 const {curSong} = storeToRefs(songStore)
 
-const bgUrl = computed(() => `url('${curSong.value?.al?.picUrl || curSong.value?.album?.picUrl}')`)
+const bgUrl = computed(() => `url('${curSong.value?.al?.picUrl || curSong.value?.album?.picUrl || curSong.value?.pic}')`)
 const stateStore = useStateStore()
-const {animationState, showNormalPlayer} = storeToRefs(stateStore)
+const {animationState} = storeToRefs(stateStore)
 
 const showSonglist = ref(false)
 
@@ -26,18 +39,6 @@ function openSonglist() {
 // play fun
 const {audio, paused} = usePlayCircleHook()
 
-audio.addEventListener('play', () => {
-  paused.value = false
-  animationState.value = 'running'
-})
-audio.addEventListener('ended', () => {
-  animationState.value = 'paused'
-  paused.value = true
-})
-audio.addEventListener('error',()=>{
-  animationState.value = 'paused'
-  paused.value = true
-})
 
 // const
 function playMode() {
@@ -60,41 +61,35 @@ function nextSong() {
   songStore.nextSong()
 }
 
-const transStart = ref('translate(0,0)')
+const aniStart = ref('translate(0,0) scale(1,1) ')
 
-const route = useRoute()
-console.log(route)
+const circleImgRef = ref<HTMLElement>()
 
-function onenter(el: HTMLElement, done: () => void) {
-  const rect = el.getBoundingClientRect()
-  transStart.value = `translate(calc(48px - 8px - 50vw),calc(${rect.bottom + rect.height - 48 - 16}px))`
-  el.classList.add('show-img')
+function onEnter(el: Element, done: () => void) {
+  if (circleImgRef.value) {
+    const rect = circleImgRef.value.getBoundingClientRect()
+    const ratio = 48 / rect.width
+    aniStart.value = `translate(${props.x - rect.x - rect.width * (1 - ratio) / 2}px,${props.y - rect.top - rect.height * (1 - ratio) / 2}px) scale(0.2) `
+  }
   setTimeout(() => {
     done()
-  }, 1000)
+  }, 600)
 }
 
-function onafterEnter(el: HTMLElement) {
-  el.classList.remove('show-img')
-}
 
 </script>
 
 <template>
-  <transition appear name="page">
-    <div v-if="showNormalPlayer" class="main">
+  <transition name="page" @enter="onEnter">
+    <div class="main" v-if="showMe">
       <div class="bg-view"></div>
       <div class="play-view">
-        <nav-bar :song="curSong"/>
+        <nav-bar @close="closeMe" v-if="curSong" :song="curSong"/>
         <!--      circle-->
         <div class="circle-wrapper">
-          <transition appear
-                      @enter="onenter"
-                      @afterEnter="onafterEnter"
-          >
-            <img v-if="showNormalPlayer" class="circle-img" :src="curSong?.al?.picUrl||curSong?.album?.picUrl"
-                 alt=""/>
-          </transition>
+          <img ref="circleImgRef" class="circle-img"
+               :src="curSong?.al?.picUrl||curSong?.album?.picUrl|| curSong?.pic"
+               alt=""/>
         </div>
         <!--lyric-->
         <lyric-wrapper class="ly"/>
@@ -123,9 +118,20 @@ function onafterEnter(el: HTMLElement) {
 </template>
 <style scoped lang="less">
 
-.page-enter-active,
+.page-enter-active {
+  transition: opacity 0.6s ease;
+
+  .circle-img {
+    animation: show-circle 0.6s !important;
+  }
+}
+
 .page-leave-active {
-  transition: all 0.6s linear;
+  transition: opacity 0.6s ease;
+
+  .circle-img {
+    animation: show-circle 0.6s reverse !important;
+  }
 }
 
 .page-enter-from,
@@ -133,24 +139,6 @@ function onafterEnter(el: HTMLElement) {
   opacity: 0;
 }
 
-.page-leave-active {
-  .circle-img {
-    transition: all 0.6s linear;
-    animation: none !important;
-  }
-
-}
-
-.page-leave-to {
-
-  .circle-img {
-    width: 48px !important;
-    height: 48px !important;
-    border-radius: 0 !important;
-    transform: v-bind(transStart)
-  }
-
-}
 
 .main {
   background: #ffffff;
@@ -164,7 +152,7 @@ function onafterEnter(el: HTMLElement) {
   position: absolute;
   background-image: v-bind(bgUrl);
   background-position: center;
-  background-size: 260%;
+  background-size: 200%;
   background-repeat: no-repeat;
   filter: blur(20px);
 }
@@ -174,7 +162,6 @@ function onafterEnter(el: HTMLElement) {
   background: rgba(243, 237, 237, 0.11);
   display: flex;
   flex-direction: column;
-
 
   .circle-wrapper {
     width: 100vw;
@@ -186,14 +173,11 @@ function onafterEnter(el: HTMLElement) {
     .circle-img {
       animation: playCircle 20s infinite linear;
       animation-play-state: v-bind(animationState);
-      width: 69vw;
-      height: 69vw;
+      width: 64vw;
+      height: 64vw;
       border-radius: 50%;
-      border: 0.5rem solid rgba(248, 242, 242, 0.37);
-    }
 
-    .show-img {
-      animation: show-circle 1s 1 linear;
+      border: 3vw solid rgba(248, 242, 242, 0.37);
     }
 
   }
@@ -219,11 +203,11 @@ function onafterEnter(el: HTMLElement) {
   position: absolute;
   bottom: 0;
   width: 100%;
-  .lists{
+
+  .lists {
     margin-top: 100%;
     padding: 0 32px;
     height: 20rem;
-    overflow: scroll;
     background: white;
   }
 }
@@ -231,14 +215,8 @@ function onafterEnter(el: HTMLElement) {
 
 @keyframes show-circle {
   0% {
-    width: 48px;
-    height: 48px;
     border-radius: 0;
-    transform: v-bind(transStart)
-  }
-  30% {
-    border-radius: 50%;
-
+    transform: v-bind(aniStart)
   }
   100% {
   }

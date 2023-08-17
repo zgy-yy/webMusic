@@ -4,13 +4,13 @@
 
 <template>
   <div class="main-top">
-    <embed class="icon icon-opt" type="image/svg+xml" src="src/assets/icon/option.svg"/>
+    <img alt="" class="icon icon-opt" src="src/assets/icon/option.svg"/>
     <span class="input-bar">
       <embed class="icon" type="image/svg+xml" src="src/assets/icon/search.svg"/>
       <input placeholder="搜索"/>
     </span>
-    <embed class="icon icon-scan" type="image/svg+xml" src="src/assets/icon/scan.svg"/>
-    <embed class="icon icon-listen" type="image/svg+xml" src="src/assets/icon/listen.svg"/>
+    <img class="icon icon-scan" type="image/svg+xml" src="src/assets/icon/scan.svg" alt=""/>
+    <img class="icon icon-listen" type="image/svg+xml" src="src/assets/icon/listen.svg" alt=""/>
   </div>
 </template>
 
@@ -51,7 +51,8 @@
   margin-left: 24px;
   margin-right: 12px;
 }
-.icon-listen{
+
+.icon-listen {
   margin-right: 16px;
 }
 </style>

@@ -15,7 +15,6 @@ const useSongStore = defineStore('songStore', () => {
     }
 
     function nextSong() {
-        console.log(1,curSong.value , songList.value.length)
         if (curSong.value && songList.value.length>0) {
             const curIndex = songList.value?.findIndex((item) => {
                 return item.id == curSong.value?.id

@@ -52,6 +52,7 @@ export class Lyric {
         const timeExp = /\[(\d{2,}):(\d{2})(?:\.(\d{2,3}))?]/g
         const lines = this.lrc.split('\n')
         const offset = parseInt(this.tags['offset']) || 0
+
         for (let i = 0; i < lines.length; i++) {
             const line = lines[i]
             const result = timeExp.exec(line)
@@ -61,7 +62,7 @@ export class Lyric {
                     this.lines.push({
                         time:
                             (parseInt(result[1]) * 60 + parseInt(result[2])) * 1000 +
-                            parseInt(result[3] || '0') * 10 +
+                            parseInt(result[3]) +
                             offset,
                         txt
                     })
@@ -112,7 +113,6 @@ export class Lyric {
     }
 }
 
-
 export function formatTime(interval: number) {
     interval = interval | 0
     const minute = ((interval / 60 | 0) + '').padStart(2, '0')
@@ -122,4 +122,34 @@ export function formatTime(interval: number) {
 
 export function getLocalUrl(name: string) {
     return new URL(name, import.meta.url).href;
+}
+
+export function throttle(fun: (...args: any[]) => any, interval: number, leading = true, trailing = true) {
+    let startTime: number = 0
+    let timer: any = null
+    const _throttle = function (this: any, ...args: any[]) {
+        const nowTime = new Date().getDate()
+        //是否立即执行,默认立即执行
+        if (!leading && startTime === 0) {
+            startTime = nowTime
+        }
+
+        const waitTime = interval - (nowTime - startTime)
+        if (waitTime <= 0) {
+            if (timer) clearTimeout(timer)
+            fun.apply(this, args)
+            startTime = nowTime
+        }
+
+        //判断尾部是否执行
+        if (trailing && !timer) {
+            timer = setTimeout(() => {
+                fun.apply(this, args)
+                startTime = nowTime
+                timer = null
+            }, waitTime)
+        }
+    }
+
+    return _throttle
 }

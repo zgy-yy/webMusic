@@ -6,6 +6,16 @@ import TipsView from "@/hooks/TipsView";
 export function usePlayCircleHook() {
     const audio = getAudioContext()
     const paused = ref(audio.paused)
+    audio.addEventListener('pause', () => {
+        paused.value = true
+    })
+    audio.addEventListener('play', () => {
+        paused.value = false
+    })
+    audio.addEventListener('error',()=>{
+        paused.value = true
+    })
+
 
     return {
         audio,

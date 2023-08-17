@@ -8,9 +8,9 @@ import type { SingerDetail } from '@/type/singer'
 import { getSingerDetail } from '@/server/api/singer'
 
 const useListStore = defineStore('list', () => {
-  const playlistDetail = ref<PlayList>()
-  const albumDetail = ref<AlbumDetail>()
-  const singerDetail = ref<SingerDetail>()
+  const playlistDetail = ref<PlayList>() //歌单详情
+  const albumDetail = ref<AlbumDetail>()//专辑详情
+  const singerDetail = ref<SingerDetail>()//歌手详情
 
   function getPlaylistDetail(id: number) {
     return getListDetail(id).then((res) => {

@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import useSongStore from '@/stores/songStore'
 import {storeToRefs} from 'pinia'
-import useStateStore from '@/stores/stateStore'
 import {computed, nextTick, ref, watch} from "vue";
 import {songCanplay, usePlayCircleHook} from "@/hooks/playCircle";
 import {Lyric} from "@/utils";
@@ -9,11 +8,15 @@ import CurPlayingPlaylist from "@/components/CurPlayingPlaylist.vue";
 
 const songStore = useSongStore()
 const {curSong, lyric} = storeToRefs(songStore)
-const stateStore = useStateStore()
-const {showNormalPlayer} = storeToRefs(stateStore)
+const emits = defineEmits<{
+  (name: "clickMe", props: {
+    x: number,
+    y: number
+  }): void
+}>()
 
 
-const {audio} = usePlayCircleHook()
+const {audio, paused} = usePlayCircleHook()
 //
 const lrc = computed(() => {
   return new Lyric(lyric.value.lyric)
@@ -29,23 +32,25 @@ const process = ref(0)
 //
 audio.addEventListener('timeupdate', () => {
   lrc.value.update(audio.currentTime * 1000, lyricUpdate)
-  process.value = (1 - audio.currentTime / audio.duration) * 62.8318
+  let percent = 1 - audio.currentTime / audio.duration
+  if (isNaN(percent)) {
+    percent = 1
+  }
+  process.value = percent * 62.8318
 })
 
-const paused = ref(false)
-audio.addEventListener('pause', () => {
-  paused.value = true
-})
-audio.addEventListener('play', () => {
-  paused.value = false
-})
 audio.addEventListener('ended', () => {
   songStore.nextSong()
 })
 
+const imgRef = ref<HTMLElement>()
 
-function showPlayer() {
-  showNormalPlayer.value = true
+function emitEvent() {
+  if (imgRef.value) {
+    const rect = imgRef.value.getBoundingClientRect()
+    emits('clickMe', {x: rect.x, y: rect.y})
+  }
+
 }
 
 function changePlay() {
@@ -59,11 +64,11 @@ function changePlay() {
 const songInfoRef = ref()
 const lyricRef = ref()
 
-function checkOverflow(el: HTMLElement) {
+function checkOverflow(el: HTMLElement) { //检擦文字溢出 则滚动
   if (el.clientWidth < el.scrollWidth) {
-    el.className = "roll-ani"
+    el.classList.add("roll-ani")
   } else {
-    el.className = ""
+    el.classList.remove("roll-ani")
   }
 }
 
@@ -72,7 +77,6 @@ watch(curSong, (newVal) => {
     songCanplay(newVal).catch(res => {
       songStore.nextSong()
     })
-
   }
 
   nextTick(() => {//歌曲信息溢出滚动
@@ -91,8 +95,9 @@ const showSonglist = ref(false)
 </script>
 
 <template>
-  <div class="mini-wrapper" @click="showPlayer">
-    <img :src="curSong?.al?.picUrl||curSong?.album?.picUrl" alt=""/>
+  <div class="mini-wrapper" @click="emitEvent">
+    <img ref="imgRef" :src="curSong?.al?.picUrl||curSong?.album?.picUrl||curSong?.pic"
+         :loading="'/src/assets/icon/none.svg'" alt=""/>
     <div class="info no-wrap">
       <p ref="songInfoRef">
         <span class="song-name">{{ curSong?.name }}</span>
@@ -159,13 +164,13 @@ const showSonglist = ref(false)
 
   .info {
     flex: 1;
-
     height: 100%;
 
     display: flex;
     flex-direction: column;
     justify-content: center;
     text-align: start;
+
 
     .song-name {
       font-size: 14px;
@@ -218,7 +223,7 @@ const showSonglist = ref(false)
     transform: translateX(0%);
   }
   100% {
-    transform: translateX(-100%);
+    transform: translateX(-50%);
   }
 }
 
@@ -230,7 +235,6 @@ const showSonglist = ref(false)
 
   .lists {
     background: white;
-    overflow: scroll;
     height: 300px;
     margin-top: 100%;
   }

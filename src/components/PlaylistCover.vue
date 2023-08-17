@@ -46,7 +46,8 @@ function toPlaylistPage() {
   div {
     position: relative;
     img {
-      width: 100%;
+      width: 120px;
+      height: 120px;
       border-radius: 8px;
     }
 
