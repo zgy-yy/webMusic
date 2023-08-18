@@ -18,14 +18,15 @@ const songStore = useSongStore()
 
 const isLoading = ref(true)
 const listStore = useListStore()
-const {playlistDetail} = storeToRefs(listStore)
+const {albumDetail} = storeToRefs(listStore)
 
-const imgUrl: ComputedRef = computed(() => (playlistDetail.value?.coverImgUrl))
-const bgUrl: ComputedRef = computed(() => (`url(${playlistDetail.value?.coverImgUrl})`))
-const songs: ComputedRef = computed(() => (playlistDetail.value?.tracks))
+const imgUrl: ComputedRef = computed(() => (albumDetail.value?.album.picUrl))
+const bgUrl: ComputedRef = computed(() => (`url(${albumDetail.value?.album.picUrl})`))
+const songs: ComputedRef = computed(() => (albumDetail.value?.songs))
 
-listStore.getPlaylistDetail(Number(id.value)).then(() => {
+listStore.getDetailAlbum(Number(id.value)).then(() => {
   isLoading.value = false
+  console.log(listStore.albumDetail)
 })
 
 const router = useRouter()
@@ -64,7 +65,7 @@ const switchItems = [
       <template #top>
         <div class="ignore">
           <img class="core-img" :src="imgUrl" alt=""/>
-          <p class="no-wrap name"> {{ playlistDetail?.name }}</p>
+          <p class="no-wrap name"> {{ albumDetail?.album.description }}</p>
           <div class="switch-bar">
             <template v-for="item in switchItems" :key="item.name">
               <p :class="item.active?'active-sw-bar':''">{{ item.name }}</p>

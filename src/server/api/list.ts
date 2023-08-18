@@ -6,16 +6,35 @@ import type {PlayList} from "@/type/recommentType";
 可以获取对应歌单内的所有的音乐，但是返回的trackIds是完整的，tracks 则是不完整的，
 可拿全部 trackIds 请求一次 song/detail*/
 export function getListDetail(id: number) {
-  return request
-    .get<{ playlist: PlayList; code: number }>({
-      url: '/playlist/detail',
-      params: {
-        id
-      }
+    return request
+        .get<{ playlist: PlayList; code: number }>({
+            url: '/playlist/detail',
+            params: {
+                id
+            }
+        })
+        .then((res) => {
+            if (res.code == 200) {
+                return res.playlist
+            }
+        })
+}
+
+export function getPlaylistCat() {
+    return request.get({
+        url: '/playlist/highquality/tags'
+    }).then(res => {
+        return res.tags
     })
-    .then((res) => {
-      if (res.code == 200) {
-        return res.playlist
-      }
+}
+
+export function getQplaylist(cat: string) {
+    return request.get({
+        url: '/top/playlist/highquality',
+        params: {
+            cat: cat
+        }
+    }).then(res => {
+        return res
     })
 }

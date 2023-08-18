@@ -22,10 +22,18 @@ const router = createRouter({
             }
         },
         {
-            path: '/singerDetails/:id',//歌单详情页
+            path: '/singerDetails/:id',//歌手详情页
             props: true, //将参数设置成组件属性
             name: 'singerDetailList',
-            component: () => import('../views/list/SingerListView.vue'),
+            component: () => import('../views/list/SingerDetailView.vue'),
+            meta: {
+                hiddenTabBar: true
+            }
+        },        {
+            path: '/albumDetails/:id',//歌手详情页
+            props: true, //将参数设置成组件属性
+            name: 'albumDetailList',
+            component: () => import('../views/list/AlbumDetailView.vue'),
             meta: {
                 hiddenTabBar: true
             }

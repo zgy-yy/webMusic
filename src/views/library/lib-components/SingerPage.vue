@@ -6,9 +6,11 @@ import {useRouter} from "vue-router";
 import VirtualList from "@/components/VirtualList.vue";
 import VScroll from "@/components/VScroll.vue";
 
+const miniLoading = ref(true)
 const singers = ref<Singer[]>([])
 getSingerHot().then(res => {
   singers.value = res
+  miniLoading.value = false
 })
 const router = useRouter()
 
@@ -24,11 +26,11 @@ function toPlaylistPage(id: number) {
 
 <template>
   <div class="singer-page">
-
+    <div :class="miniLoading?'mini-loading':''"></div>
     <v-scroll v-if="singers.length>0">
       <li v-for="item in singers" :key="item.id" @click="toPlaylistPage(item.id)">
         <div class="singer">
-          <img class="singer-pic" :src="item.picUrl" :loading="'/src/assets/icon/none.svg'" alt=""/>
+          <img class="singer-pic" v-lazy="item.picUrl" :loading="'/src/assets/icon/none.svg'" alt=""/>
           <div class="singer-info">
             <p class="no-wrap">{{ item.name }}</p>
           </div>

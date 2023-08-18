@@ -1,6 +1,5 @@
 import request from '@/server/request'
 import type {Singer} from '@/type/singer'
-import type {Song} from '@/type/music'
 
 
 //热门歌手

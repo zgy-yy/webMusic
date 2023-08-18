@@ -11,13 +11,16 @@ import useSongStore from "@/stores/songStore";
 
 
 const isLoading = ref(true)
-
+const miniLoading = ref(true)
 const recommendStore = useRecommendStore()
 recommendStore.haveRecommendedPlaylists()
 recommendStore.haveNewAlbum().then(() => {
   isLoading.value = false
 })
-recommendStore.haveNewSongs()
+
+recommendStore.haveNewSongs().then(() => {
+  miniLoading.value = false
+})
 recommendStore.haveRecPlaylist()
 const {hotRecommend, newSongs} = storeToRefs(recommendStore)
 
@@ -30,7 +33,7 @@ function setPlayList() {
 
 <template>
   <div class="main" v-loading="isLoading">
-    <top-bar/>
+    <top-bar class="top-bar"/>
     <banner class="banner"/>
 
     <div class="section">
@@ -61,9 +64,9 @@ function setPlayList() {
           <span>更多</span>
         </div>
       </h3>
-      <div class="recommend-list new-songs no-scroll-bar">
-        <template v-for="itemSong in newSongs">
-          <song-item  @set-song-list="setPlayList" class="song-items" :name="itemSong.name"
+      <div class="recommend-list new-songs no-scroll-bar" :class="miniLoading?'mini-loading':''">
+        <template v-for="itemSong in newSongs" :key="itemSong.id">
+          <song-item @set-song-list="setPlayList" class="song-items" :name="itemSong.name"
                      :id="itemSong.id"
                      :singer="itemSong.artists" :mp3-url="itemSong.mp3Url" :pic="itemSong.album.picUrl"
           ></song-item>
@@ -78,6 +81,13 @@ function setPlayList() {
 .main {
   overflow-y: scroll;
   overflow-x: hidden;
+
+  .top-bar {
+    background: white;
+    z-index: 1;
+    top: 0;
+    position: sticky;
+  }
 
   .banner {
     margin: 8px 16px;

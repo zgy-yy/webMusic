@@ -15,15 +15,15 @@ export interface Banner {
 
 export interface RecommendPlaylist {
     id: number
-    type: number
+    type?: number
     name: string
-    copywriter: string
+    copywriter?: string
     picUrl: string
-    canDislike: boolean
-    trackNumberUpdateTime: number
+    canDislike?: boolean
+    trackNumberUpdateTime?: number
     playCount: number
-    trackCount: number
-    highQuality: boolean
+    trackCount?: number
+    highQuality?: boolean
     alg: string
 }
 

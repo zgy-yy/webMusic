@@ -41,25 +41,14 @@ onMounted(() => {
 </script>
 
 <template>
-  <v-scroll>
-    <template #top><div>fwef</div></template>
-    <p class="scroll-item" v-for="(item, index) in data.list" :key="index">{{ item }}</p>
-  </v-scroll>
+  <div class="main">
+
+  </div>
 </template>
 
 <style scoped lang="less">
-.scroll-wrapper {
-  background: #ab8b8b;
-  height: 400px;
-  position: relative;
-  overflow: hidden;
-
-
-}
-
-.scroll-item {
-  height: 50px;
-  border: 1px saddlebrown solid;
+.main {
+  height: 100%;
 }
 
 </style>

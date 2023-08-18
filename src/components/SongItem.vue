@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import {toRaw, toRefs} from "vue";
+import {ref, toRaw, toRefs} from "vue";
 import {getLocalUrl} from "@/utils";
 import useSongStore from "@/stores/songStore";
 
@@ -18,14 +18,15 @@ function setPlay() {
   const rowSong = toRaw(props)
   songStore.setCurSong(rowSong)
   emits('setSongList')
-
 }
+
+
+// :src="pic??'/src/assets/icon/none.svg'"
 </script>
 
 <template>
   <div class="song" @click="setPlay" :key="id">
-    <img class="song-pic" :src="pic??'/src/assets/icon/none.svg'" alt="">
-    <!--    <img class="song-pic" :src="album?.picUrl||al?.picUrl" alt=""/>-->
+    <img class="song-pic" v-lazy="pic" alt="">
     <div class="song-info">
       <p class="no-wrap song-name">{{ name }}</p>
       <p class="no-wrap singer">

@@ -22,14 +22,13 @@ function toPlaylistPage() {
 <template>
   <div class="wrapper" @click="toPlaylistPage">
     <div>
-      <img :src="picUrl" :alt="name"/>
+      <img v-lazy="picUrl" :alt="name"/>
       <p class="play-count">
         <span>
           {{ playNumStr(playCount) }}
         </span>
-        <embed class="icon-play" type="image/svg+xml" src="src/assets/icon/playdot.svg"/>
+        <img class="icon-play" alt="" src="/src/assets/icon/playdot.svg"/>
       </p>
-
     </div>
     <p class="play-name">{{ name }}</p>
   </div>
@@ -45,6 +44,7 @@ function toPlaylistPage() {
 
   div {
     position: relative;
+
     img {
       width: 120px;
       height: 120px;
@@ -53,14 +53,13 @@ function toPlaylistPage() {
 
     .play-count {
       background: white;
-      width: 52px;
+      width: 42px;
       height: 16px;
       position: absolute;
       right: 6px;
       border-radius: 10px;
       bottom: 10px;
       padding: 0 5px;
-      display: flex;
 
       span {
         font-size: 10px;
@@ -70,9 +69,15 @@ function toPlaylistPage() {
         color: rgba(45, 45, 45, 1);
         vertical-align: top;
       }
-      .icon-play{
-        position: relative;
-        right: -5px;
+
+      .icon-play {
+        float: right;
+        position: absolute;
+        right: 0;
+        width: 16px;
+        height: 16px;
+        //position: relative;
+        //right: -5px;
       }
     }
   }

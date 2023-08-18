@@ -143,6 +143,7 @@ function onEnter(el: Element, done: () => void) {
 .main {
   background: #ffffff;
   height: 100%;
+  z-index: 99;
 }
 
 .bg-view {

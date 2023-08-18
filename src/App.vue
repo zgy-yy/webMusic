@@ -31,7 +31,7 @@ function showNormalPlayer(props: { x: number, y: number }) {
       class="main-view no-scroll-bar"
       v-slot="{ Component }"
   >
-    <keep-alive exclude="ListView,SongListView,SingerListView">
+    <keep-alive exclude="ListView,SongListView,SingerListView ,AlbumDetailView">
       <component :is="Component"/>
     </keep-alive>
   </router-view>

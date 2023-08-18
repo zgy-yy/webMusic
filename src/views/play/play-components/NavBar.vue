@@ -24,7 +24,7 @@ function close() {
       <img class="icon" src="/src/assets/icon/share.svg" alt=""/>
     </p>
     <p class="singer">
-      <span v-for="(art,index) in (song?.artists||song?.ar)" :key="art.name">
+      <span v-for="(art,index) in (song?.artists||song?.ar||song.singer)" :key="art.name">
           {{ art.name }}<span v-if="index!==(song?.artists||song?.ar)?.length-1"> / </span>
         </span>
     </p>
